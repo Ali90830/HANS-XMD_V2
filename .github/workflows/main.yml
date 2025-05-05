@@ -1,0 +1,108 @@
+#!/bin/bash
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Animation
+spinner() {
+    local pid=$!
+    local delay=0.1
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf " [${CYAN}%c${NC}]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
+
+# Header
+clear
+echo -e "${PURPLE}"
+echo "  _   _   _   _   _  ____  _____  ____  ____  ___  ____  "
+echo " | | | | / \ | \ | |/ ___||_   _|/ ___||  _ \|_ _|/ ___| "
+echo " | |_| |/ _ \|  \| |\___ \  | |  \___ \| | | || | \___ \ "
+echo " |  _  / ___ \ |\  | ___) | | |   ___) | |_| || |  ___) |"
+echo " |_|_|/_/   \_\_| \_||____/  |_|  |____/|____/|___||____/ "
+echo -e "${NC}"
+echo -e "${BLUE}🚀 Deployment Script for HANS-XMD_V2${NC}"
+echo -e "${BLUE}===================================${NC}"
+
+# System Update
+echo -e "\n${YELLOW}[⚡] System Update in Progress...${NC}"
+pkg update -y && pkg upgrade -y &
+spinner
+echo -e "\n${GREEN}[✓] System Updated Successfully!${NC}"
+
+# Install Dependencies
+echo -e "\n${YELLOW}[⚡] Installing Dependencies...${NC}"
+pkg install -y git nodejs ffmpeg imagemagick libwebp python yarn &
+spinner
+echo -e "\n${GREEN}[✓] Dependencies Installed!${NC}"
+
+# Clone Repository
+echo -e "\n${YELLOW}[⚡] Cloning HANS-XMD_V2 Repository...${NC}"
+if [ -d "HANS-XMD_V2" ]; then
+    echo -e "${BLUE}[ℹ] Repository exists, updating...${NC}"
+    cd HANS-XMD_V2 && git pull && cd .. &
+    spinner
+else
+    git clone https://github.com/Mrhanstz/HANS-XMD_V2.git &
+    spinner
+fi
+echo -e "${GREEN}[✓] Repository Cloned/Updated!${NC}"
+
+# Enter Directory
+cd HANS-XMD_V2 || { echo -e "${RED}[✗] Failed to enter directory!${NC}"; exit 1; }
+
+# Install Node Modules
+echo -e "\n${YELLOW}[⚡] Installing Node Modules...${NC}"
+npm install &
+spinner
+npm install -g npm@latest &
+spinner
+npm audit fix --force &
+spinner
+echo -e "\n${GREEN}[✓] Node Modules Installed!${NC}"
+
+# Yarn Installation
+echo -e "\n${YELLOW}[⚡] Setting Up Yarn...${NC}"
+yarn install &
+spinner
+echo -e "\n${GREEN}[✓] Yarn Setup Complete!${NC}"
+
+# Environment Setup
+echo -e "\n${YELLOW}[⚡] Configuring Environment...${NC}"
+if [ ! -f ".env" ]; then
+    cp example.env .env
+    echo -e "${BLUE}[ℹ] Please edit the .env file with your credentials${NC}"
+else
+    echo -e "${BLUE}[ℹ] .env file already exists${NC}"
+fi
+echo -e "${GREEN}[✓] Environment Configured!${NC}"
+
+# Start Bot
+clear
+echo -e "${PURPLE}"
+echo "  _   _   _   _   _  ____  _____  ____  ____  ___  ____  "
+echo " | | | | / \ | \ | |/ ___||_   _|/ ___||  _ \|_ _|/ ___| "
+echo " | |_| |/ _ \|  \| |\___ \  | |  \___ \| | | || | \___ \ "
+echo " |  _  / ___ \ |\  | ___) | | |   ___) | |_| || |  ___) |"
+echo " |_|_|/_/   \_\_| \_||____/  |_|  |____/|____/|___||____/ "
+echo -e "${NC}"
+echo -e "${GREEN}[✓] Deployment Complete!${NC}"
+echo -e "\n${YELLOW}[⚡] Starting HANS-XMD_V2...${NC}"
+echo -e "${BLUE}Use ${PURPLE}Ctrl+C ${BLUE}to stop the bot${NC}"
+node .
+
+Deploy HANS-XMD V2 ON TERMUX FOR FREE AND UNLIMITED TIME NEVER SLEEP 💤😴 DEPLOY NOW 
+
+COPY THIS CODE PAST ON YOUR TERMUX DIRECT 💨 THEN START
